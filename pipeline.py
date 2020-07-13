@@ -209,7 +209,7 @@ class WgetArgs(object):
 project = Project(
     title = 'soup.io',
     project_html = '''
-    <img class="project-logo" alt="logo" src="" height="50px"/>
+    <img class="project-logo" alt="logo" src="https://www.archiveteam.org/images/e/ef/Soup.io-logo.png" height="50px"/>
     <h2>soup.io <span class="links"><a href="https://soup.io/">Website</a> &middot; <a href="http://tracker.archiveteam.org/soup-io/">Leaderboard</a></span></h2>
     '''
 )
