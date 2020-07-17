@@ -16,6 +16,7 @@ local good_assets = 0
 local bad_assets = 0
 
 local discovered = {}
+local ignored_posts = {}
 
 for ignore in io.open("ignore-list", "r"):lines() do
   downloaded[ignore] = true
@@ -41,7 +42,11 @@ allowed = function(url, parenturl)
     or string.match(url, "[<>\\\"'%*%$;%^%[%],%(%){}\n]")
     or string.match(url, "^https?://static%.soup%.io/")
     or string.match(url, "^https?://asset%.soup%.io/.+_[0-9]+%-square%.[a-z0-9A-Z]+$")
-    or string.match(url, "^https?://[^/]+/preview/[0-9]+/[0-9]+$") then
+    or string.match(url, "^https?://[^/]+/preview/[0-9]+/[0-9]+$")
+    or string.match(url, "^https?://[^/]+/rss$")
+    or string.match(url, "^https?://[^/]+/none$")
+    or string.match(url, "^https?://[^/]+/rss/original$")
+    or string.match(url, "^https?://[^/]+/friends%?.*since=0") then
     return false
   end
 
@@ -67,6 +72,11 @@ allowed = function(url, parenturl)
   if parenturl ~= nil
     and string.match(url, "/post/([0-9]+)/[0-9a-zA-Z_%-]*") == string.match(parenturl, "/post/([0-9]+)/[0-9a-zA-Z_%-]*")
     and (string.match(url, "/post/[0-9]+/$") or string.match(url, "/post/[0-9]+/none$")) then
+    return false
+  end
+
+  if string.match(url, "^https?://[^/]+/post/[0-9]+") then
+    ignored_posts[url] = true
     return false
   end
 
@@ -278,6 +288,9 @@ wget.callbacks.finish = function(start_time, end_time, wall_time, numurls, total
   local file = io.open(item_dir .. '/' .. warc_file_base .. '_data.txt', 'w')
   for blog, _ in pairs(discovered) do
     file:write("blog:" .. blog .. "\n")
+  end
+  for post, _ in pairs(ignored_posts) do
+    file:write("post-url:" .. post .. "\n")
   end
   file:close()
 end
