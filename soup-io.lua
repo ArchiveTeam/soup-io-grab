@@ -231,9 +231,9 @@ wget.callbacks.httploop_result = function(url, err, http_stat)
       or status_code  == 0 then
     io.stdout:write("Server returned "..http_stat.statcode.." ("..err.."). Sleeping.\n")
     io.stdout:flush()
-    local maxtries = 16
+    local maxtries = 14
     if string.match(url["url"], "^https?://asset%.soup%.io/") then
-      maxtries = 12
+      maxtries = 8
     end
     if not allowed(url["url"], nil) then
       maxtries = 2
