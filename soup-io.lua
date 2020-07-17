@@ -12,6 +12,8 @@ local downloaded = {}
 local addedtolist = {}
 local allowed_urls = {}
 local abortgrab = false
+local good_assets = 0
+local bad_assets = 0
 
 local discovered = {}
 
@@ -229,25 +231,36 @@ wget.callbacks.httploop_result = function(url, err, http_stat)
       or status_code  == 0 then
     io.stdout:write("Server returned "..http_stat.statcode.." ("..err.."). Sleeping.\n")
     io.stdout:flush()
-    local maxtries = 10
+    local maxtries = 16
+    if string.match(url["url"], "^https?://asset%.soup%.io/") then
+      maxtries = 12
+    end
     if not allowed(url["url"], nil) then
-        maxtries = 2
+      maxtries = 2
     end
     if tries > maxtries then
       io.stdout:write("\nI give up...\n")
       io.stdout:flush()
       tries = 0
       if allowed(url["url"], nil) then
-        io.open("BANNED", "w"):close()
+        if string.match(url["url"], "^https?://asset%.soup%.io/")
+          and good_assets >= bad_assets then
+          bad_assets = bad_assets + 1
+          return wget.actions.NOTHING
+        end
         return wget.actions.ABORT
       else
         return wget.actions.EXIT
       end
     else
-      os.execute("sleep " .. math.floor(math.pow(2, tries)))
+      os.execute("sleep " .. math.min(1800, math.floor(math.pow(2, tries))))
       tries = tries + 1
       return wget.actions.CONTINUE
     end
+  end
+
+  if string.match(url["url"], "^https?://asset%.soup%.io/") then
+    good_assets = good_assets + 1
   end
 
   tries = 0
