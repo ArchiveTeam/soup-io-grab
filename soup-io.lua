@@ -46,6 +46,7 @@ allowed = function(url, parenturl)
     or string.match(url, "^https?://[^/]+/rss$")
     or string.match(url, "^https?://[^/]+/none$")
     or string.match(url, "^https?://[^/]+/rss/original$")
+    or string.match(url, "^https?://[^/]+/planet%?.+")
     or string.match(url, "^https?://[^/]+/friends%?.+") then
     return false
   end
