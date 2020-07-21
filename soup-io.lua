@@ -96,8 +96,13 @@ wget.callbacks.lookup_host = function(host)
       return "45.153.143.249"
     end
   end
+  
+  if string.match(host, "^static%.soup%.io$") ~= nil then
+    return "45.153.143.247"
+  end
+  
   if host:lower() == item_value:lower() then
-     return "45.153.143.247"
+    return "45.153.143.247"
   end
 
   -- Else, use the real address
