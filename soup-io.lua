@@ -91,10 +91,8 @@ end
 wget.callbacks.lookup_host = function(host)
   if string.match(host, "^asset%.soup%.io$") ~= nil then
     if string.len(item_value) % 2 == 0 then
-      print("Using 248")
       return "45.153.143.248"
     else
-      print("Using 249")
       return "45.153.143.249"
     end
   end
