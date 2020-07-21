@@ -88,6 +88,24 @@ allowed = function(url, parenturl)
   return false
 end
 
+wget.callbacks.lookup_host = function(host)
+  if string.match(host, "^asset%.soup%.io$") ~= nil then
+    if string.len(item_value) % 2 == 0 then
+      print("Using 248")
+      return "45.153.143.248"
+    else
+      print("Using 249")
+      return "45.153.143.249"
+    end
+  end
+  if host:lower() == item_value:lower() then
+     return "45.153.143.247"
+  end
+
+  -- Else, use the real address
+  return nil
+end
+
 wget.callbacks.download_child_p = function(urlpos, parent, depth, start_url_parsed, iri, verdict, reason)
   local url = urlpos["url"]["url"]
   local html = urlpos["link_expect_html"]
